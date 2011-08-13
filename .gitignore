@@ -9,5 +9,15 @@ hllib*/
 *.sln
 *.suo
 *.opensdf
+*.log
+*.tlog
+*.pdb
+*.dll
+*.exe
+*.lib
+*.pdb
+*.exp
 
-cpp/python-hllib
+cpp/
+chllib/Release
+ipch/
