@@ -1,0 +1,13 @@
+proj/
+bin/
+hllib*/
+
+*.vcxproj
+*.filters
+*.user
+*.sdf
+*.sln
+*.suo
+*.opensdf
+
+# cpp/
