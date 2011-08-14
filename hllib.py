@@ -31,7 +31,7 @@ class HLLib:
             return None
 
 
-    def extract(self, extr, outdir, **kwargs):
+    def extract(self, extr, **kwargs):
         if type(extr) is list:
             if 'multidir' in kwargs and kwargs['multidir'] is True:
                 edir = {}
@@ -40,14 +40,28 @@ class HLLib:
                     psplit = z.split('\\')
                     wdir = os.path.split(z)[0]
                     temp[wdir].append(z) # Add each fn to the appropriate working dir list.
-                self.__open__()
-                for t in temp.items():
-                    extr_dir = os.path.join(outdir, self.packagestr, t[0])
-                    if not os.path.exists(extr_dir):
-                        os.makedirs(extr_dir)
-                    if len(t[1]) > 1:
-                        for f in t[1]:
-                            self.pkg.extract(f, extr_dir)
-                    else:
-                        self.pkg.extract(t[1], extr_dir)
-                self.__close__()
+                search = temp.items()
+                multidir = True
+        elif type(extr) is dict:
+            search = extr.items()
+            multidir = False
+        self.__open__()
+        for t in search:
+            if multidir is True:
+                extr_dir = os.path.join(kwargs['outdir'], self.packagestr, t[0])
+            else:
+                extr_dir = t[0]
+            if not os.path.exists(extr_dir):
+                if 'makedirs' in kwargs and kwargs['makedirs'] is True:
+                    os.makedirs(extr_dir)
+                elif 'makedirs' in kwargs and kwargs['makedirs'] is False:
+                    raise Exception('directory path %s does not exist' % extr_dir)
+            if type(t[1]) is list and len(t[1]) > 1:
+                for f in t[1]:
+                    self.pkg.extract(f, extr_dir)
+            else:
+                self.pkg.extract(t[1], extr_dir)
+        self.__close__()
+
+
+#     def validate(self, validr, **kwargs):
