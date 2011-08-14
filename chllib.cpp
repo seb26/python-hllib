@@ -203,6 +203,7 @@ PyThreadState *g_extract_save;
 static hlUInt g_bytesExtracted;
 
 #define MAX_ITEMS 1024
+#define BUFFER_SIZE 1024
 static PyObject *
 	Package_extract(PackageObject *self, PyObject *args)
 {
@@ -783,6 +784,56 @@ static PyObject *
 }
 
 static PyObject *
+    Package_info(PackageObject *self, PyObject *args)
+{
+    HLDirectoryItem *pItem = 0, *pSubItem = 0;
+    hlChar *lpInfoItem;
+    hlChar lpTempBuffer[BUFFER_SIZE];
+
+    if (!PyArg_ParseTuple(args, "s", &lpInfoItem))
+    {
+        return NULL;
+    }
+
+    pItem = hlPackageGetRoot();
+    pSubItem = hlFolderGetItemByPath(pItem, lpInfoItem, HL_FIND_ALL);
+
+    if(pSubItem != 0)
+    {
+        PyObject *infodict;
+        *lpTempBuffer = 0;
+        hlItemGetPath(pSubItem, lpTempBuffer, sizeof(lpTempBuffer));
+
+        infodict = Py_BuildValue("{s:s}", "dir", lpInfoItem);
+
+        switch(hlItemGetType(pSubItem))
+        {
+        case HL_ITEM_FOLDER:
+            PyDict_SetItemString(infodict, "type", Py_BuildValue("s", "folder"));
+            PyDict_SetItemString(infodict, "size", Py_BuildValue("k", hlFolderGetSizeEx(pSubItem, hlTrue)));
+            PyDict_SetItemString(infodict, "sizedisk", Py_BuildValue("k", hlFolderGetSizeOnDiskEx(pSubItem, hlTrue)));
+            PyDict_SetItemString(infodict, "folders", Py_BuildValue("k", hlFolderGetFolderCount(pSubItem, hlTrue)));
+            PyDict_SetItemString(infodict, "files", Py_BuildValue("k", hlFolderGetFileCount(pSubItem, hlTrue)));
+            break;
+        case HL_ITEM_FILE:
+            PyDict_SetItemString(infodict, "type", Py_BuildValue("s", "file"));
+            PyDict_SetItemString(infodict, "extractable", Py_BuildValue("s", hlFileGetExtractable(pSubItem) ? "True" : "False"));
+            PyDict_SetItemString(infodict, "size", Py_BuildValue("k", hlFileGetSize(pSubItem)));
+            PyDict_SetItemString(infodict, "sizedisk", Py_BuildValue("k", hlFileGetSizeOnDisk(pSubItem)));
+        }
+
+        return infodict;
+
+    }
+    else
+    {
+        return NULL;
+    }
+
+}
+
+
+static PyObject *
 	Package_close(PackageObject *self, PyObject *args)
 {
 	// Close the package.
@@ -808,6 +859,7 @@ static PyMethodDef Package_methods[] = {
 	{"getattributename", (PyCFunction)Package_getattributename, METH_VARARGS, "Get attribute name"},
 	{"getattribute", (PyCFunction)Package_getattribute, METH_VARARGS, "Get attribute"},
 	{"getitemtype", (PyCFunction)Package_getitemtype, METH_VARARGS, "Get item type"},
+    {"info", (PyCFunction)Package_info, METH_VARARGS, "Returns info about a file or folder"},
 	{"close", (PyCFunction)Package_close, METH_VARARGS, "Close package"},
 	{NULL}  /* Sentinel */
 };

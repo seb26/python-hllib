@@ -88,3 +88,13 @@ class HLLib:
         else:
             raise Exception('object is not list')
 
+    def info(self, path):
+        dpath = {}
+        self.__open__()
+        if type(path) is list and len(path) > 1:
+            for z in path:
+                dpath[z] = self.pkg.info(z)
+            return dpath
+        else:
+            return self.pkg.info(path)
+        self.__close__()
