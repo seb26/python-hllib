@@ -2,7 +2,6 @@ proj/
 bin/
 hllib*/
 test0*/
-
 test0*.*
 
 *.dll
@@ -22,5 +21,5 @@ test0*.*
 *.vcxproj
 
 cpp/
-chllib/Release
+chllib/
 ipch/

@@ -32,6 +32,20 @@ class HLLib:
 
 
     def extract(self, extr, **kwargs):
+        """ Extract function.
+        extr - list or dict of items.
+            if list and multidir=False (or none):
+                all files in list extracted to same directory (outdir=r'C:\path\to\extract\to')
+            if list and multidir=True:
+                all files extracted to outdir, keeping directory structure.
+            if dict:
+                e.g. { 'C:\dir01': [ 'root\file.txt', 'root\file.avi' ] }
+                all files are extracted to the directory in the keyname.
+        kwargs:
+            outdir - if applicable, the directory to extract to.
+            multidir - set True to name folder per package name and keep directory structure.
+            makedirs - set True if missing folders should be automatically created. Defaults False.
+        """
         if type(extr) is list:
             if 'multidir' in kwargs and kwargs['multidir'] is True:
                 edir = {}
@@ -41,13 +55,13 @@ class HLLib:
                     wdir = os.path.split(z)[0]
                     temp[wdir].append(z) # Add each fn to the appropriate working dir list.
                 search = temp.items()
-                multidir = True
+                outdir = True
         elif type(extr) is dict:
             search = extr.items()
-            multidir = False
+            outdir = False
         self.__open__()
         for t in search:
-            if multidir is True:
+            if outdir is True:
                 extr_dir = os.path.join(kwargs['outdir'], self.packagestr, t[0])
             else:
                 extr_dir = t[0]
@@ -64,4 +78,13 @@ class HLLib:
         self.__close__()
 
 
-#     def validate(self, validr, **kwargs):
+    def validate(self, validr):
+        """ Validate function. Validates files when given list as first param. """
+        if type(validr) is list:
+            self.__open__()
+            for z in validr:
+                self.pkg.validate(z)
+            self.__close__()
+        else:
+            raise Exception('object is not list')
+
