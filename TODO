@@ -1,0 +1,4 @@
+* Update readme.
+* Add find() and defrag() functions.
+* Improve validate().
+* Progress functions / callbacks: what do.

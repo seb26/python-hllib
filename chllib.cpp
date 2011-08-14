@@ -1,4 +1,6 @@
 // Current source by Sandern (http://www.hl2wars.com/forum/memberlist.php?mode=viewprofile&u=2)
+// Modifications by seb26.
+
 #include "Python.h"
 #include "structmember.h"
 
@@ -804,7 +806,7 @@ static PyObject *
         *lpTempBuffer = 0;
         hlItemGetPath(pSubItem, lpTempBuffer, sizeof(lpTempBuffer));
 
-        infodict = Py_BuildValue("{s:s}", "dir", lpInfoItem);
+        infodict = Py_BuildValue("{s:s}", "path", lpInfoItem);
 
         switch(hlItemGetType(pSubItem))
         {
