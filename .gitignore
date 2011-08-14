@@ -1,22 +1,25 @@
 proj/
 bin/
 hllib*/
+test0*/
 
-*.vcxproj
+test0*.*
+
+*.dll
+*.exe
+*.exp
 *.filters
-*.user
+*.lib
+*.log
+*.opensdf
+*.pdb
+*.pyc
 *.sdf
 *.sln
 *.suo
-*.opensdf
-*.log
 *.tlog
-*.pdb
-*.dll
-*.exe
-*.lib
-*.pdb
-*.exp
+*.user
+*.vcxproj
 
 cpp/
 chllib/Release
