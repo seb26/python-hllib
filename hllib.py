@@ -88,6 +88,7 @@ class HLLib:
         else:
             raise Exception('object is not list')
 
+
     def info(self, path):
         dpath = {}
         self.__open__()
