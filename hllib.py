@@ -3,32 +3,39 @@
 
 import os
 import ctypes
-import chllib
+import chllib as c
 from collections import defaultdict
 
-class HLLib:
+class Package:
 
 
-    def __init__(self, package, volatile=False):
-        self.volatile = volatile
-        self.package = package
-        if os.path.splitext(package)[1] == '.gcf':
-            self.packagestr = package.split('\\')[-1] # the filename of the gcf
-        else:
-            self.packagestr = package.split('\\')[-2] # the parent directory of the package
+    def __init__(self, path, **kwargs):
+        if not os.path.exists(path):
+            raise Exception('Package does not exist', path)
+
+        # Try getting package type from filename.
+        self.ptype = c.function('HLPackageType', 'hlGetPackageTypeFromName', path)
+
+        # If not, read package header to determine type.
+        if self.ptype == c.type('HL_PACKAGE_NONE'):
+            tempFile = open(path, 'rb')
+            while tempFile is not None:
+                tempFile.read( c.type('
+                tempFile = None
+
+        if self.ptype == c.type('HL_PACKAGE_NONE'):
+            raise Exception('Unsupported package type', path)
 
 
-    def __open__(self):
-        self.pkg = chllib.Package(self.package, volatileaccess=self.volatile)
-        return True
 
 
-    def __close__(self):
-        if self.pkg:
-            self.pkg.close()
-            return True
-        else:
-            return None
+=
+"""
+
+x = Package(r'C:\Program Files\Steam\steamapps\team fortress 2 content.gcf')
+
+
+class Functions:
 
 
     def extract(self, extr, **kwargs):
